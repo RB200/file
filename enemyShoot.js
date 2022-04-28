@@ -35,10 +35,32 @@ AFRAME.registerComponent("enemy-bullets", {
             var direction = new THREE.Vector3()
             direction.subVectors(pos1,pos2).normalize()
 
-            enemyBullet.setAttribute('velocity',direction.multiplyScalar(10))
+            enemyBullet.setAttribute('velocity', direction.multiplyScalar(10))
             enemyBullet.setAttribute('dynamic-body',{
                 shape:'sphere',
                 mass:'0'
+            })
+
+            var element = document.querySelector('#countLife')
+            var playerLife = parseInt(element.getAttribute('text').value)
+
+            enemyBullet.addEventListener('collide', function(e){
+                if(e.detail.body.el.id === 'weapon'){
+                    if(playerLife > 0){
+                        playerLife -= 1
+                        element.setAttribute('text',{
+                            value:playerLife
+                        })
+                    }
+                    if(playerLife <= 0){
+                        var txt = document.querySelector('#over')
+                        txt.setAttribute('visible',true)
+                        var tankEL = document.querySelectorAll('.enemy')
+                        for(var i=0;i<tankEL.length;i++){
+                            scene.removeChild(tankEl[i])
+                        }
+                    }
+                }
             })
         }
     },
